@@ -1,4 +1,4 @@
-function [lat, lon, h] = orbit_propagation(a, e, Omega, omega, incl, nu0, t, start_date, epsilon)
+function [lat, lon, h, r_xyz] = orbit_propagation(a, e, Omega, omega, incl, nu0, t, start_date, epsilon)
 % Compute the ground track of an orbiting satellite with given orbital
 % parameters, an initial true anomaly, and series of time steps.
 % Accepts:

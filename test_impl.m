@@ -39,7 +39,7 @@ p_min = 0.3;
 d_max = 0.75;
 
 %Planning horizon (seconds)
-plan_horizon = 24 * 60 * 60 * 5;
+plan_horizon = 24 * 60 * 60 * 1;
 
 a = r;
 e = 0;
@@ -47,14 +47,58 @@ Omega = deg2rad(90);
 omega = deg2rad(45);
 incl = deg2rad(90);
 nu0 = 0;
-t = linspace(0, plan_horizon, 10000);
+t = [0:5:plan_horizon];
 epsilon = 10^(-10);
 start_date = [3 5 2018];
-[lat, lon, h] = orbit_propagation(a, e, Omega, omega, incl, nu0, t, start_date, epsilon);
+[lat, lon, h, r_ecef] = orbit_propagation(a, e, Omega, omega, incl, nu0, t, start_date, epsilon);
 
 long_geod = zeros(200, 1);
 lat_geod = linspace(-90, 90, 200);
 plot_ground_track(lat, lon)
+
+n = 100;
+[image_lat, image_lon] = generate_image_locations(n);
+figure
+plot(image_lon, image_lat, '.');
+hold on;
+% Load and plot MATLAB built-in Earth topography data
+load('topo.mat', 'topo');
+topoplot = [topo(:, 181:360), topo(:, 1:180)];
+contour(-180:179, -90:89, topoplot, [0, 0], 'black');
+plot(image_lon(1), image_lat(1), '*');
+plot(lon(1), lat(1), 'g*');
+plot(lon, lat)
+
+
+stat_lat = deg2rad(image_lat(1));
+stat_lon = deg2rad(image_lon(1));
+[elev, renu] = get_elevation(r_ecef, stat_lat, stat_lon);
+
+
+min_elev = deg2rad(5);
+look_angle_max = 50;
+look_angle_min = 10;
+duration = 30;
+
+[t_start, t_end, start_idx, end_idx, look_angle] = get_image_opp(r_ecef, lat, lon, stat_lat, stat_lon, look_angle_min, look_angle_max, duration, t);
+
+
+
+
+% plot(lon(start_idx), lat(start_idx), '*');
+% plot(lon(end_idx), lat(end_idx), '*');
+% 
+% 
+% figure
+% plot(elev)
+% hold on;
+% dist_renu = sqrt(renu(1,:).^2 + renu(2,:).^2 + renu(3,:).^2);
+% plot(dist_renu / max(dist_renu));
+% plot(start_idx, dist_renu(start_idx)/max(dist_renu), '*')
+% plot(end_idx, dist_renu(end_idx)/max(dist_renu), '*')
+% [pks, locs] = findpeaks(-dist_renu /max(dist_renu));
+% figure
+% plot(look_angle)
 
 % figure
 % [xE , yE, zE] = ellipsoid(0, 0, 0, r_e , r_e, r_e, 20);
