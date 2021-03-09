@@ -56,14 +56,5 @@ for idx = 1:size(r_ijk,2)
     lat(idx) = cur_phi;
     lon(idx) = cur_lam;
     h(idx) = cur_h;
-%     lat(idx) = cur_r_xyz(1);
-%     lon(idx) = cur_r_xyz(2);
-%     h(idx) = cur_r_xyz(3);
-%     lat(idx) = r_ijk(1,idx);
-%     lon(idx) = r_ijk(2,idx);
-%     h(idx) = r_ijk(3,idx);
-%     lat(idx) = r_pqw(1,idx);
-%     lon(idx) = r_pqw(2,idx);
-%     h(idx) = r_pqw(3,idx);
 end
 end

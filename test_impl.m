@@ -52,29 +52,26 @@ epsilon = 10^(-10);
 start_date = [3 5 2018];
 [lat, lon, h, r_ecef] = orbit_propagation(a, e, Omega, omega, incl, nu0, t, start_date, epsilon);
 
-long_geod = zeros(200, 1);
-lat_geod = linspace(-90, 90, 200);
-plot_ground_track(lat, lon)
+ground_stations = [78.2298391 -72.0167; 15.3924483 2.5333];
 
+% Plot ground track, image locations, and ground stations
 n = 100;
 [image_lat, image_lon] = generate_image_locations(n);
+image_geod = [image_lat.'; image_lon.'; zeros(size(image_lat)).'];
 figure
 plot(image_lon, image_lat, '.');
 hold on;
 % Load and plot MATLAB built-in Earth topography data
+plot(lon, lat)
 load('topo.mat', 'topo');
 topoplot = [topo(:, 181:360), topo(:, 1:180)];
 contour(-180:179, -90:89, topoplot, [0, 0], 'black');
-plot(image_lon(1), image_lat(1), '*');
-plot(lon(1), lat(1), 'g*');
-plot(lon, lat)
+plot(ground_stations(2,:), ground_stations(1,:), 'g*')
 
 
 stat_lat = deg2rad(image_lat(1));
 stat_lon = deg2rad(image_lon(1));
 [elev, renu] = get_elevation(r_ecef, stat_lat, stat_lon);
-
-
 min_elev = deg2rad(5);
 look_angle_max = 50;
 look_angle_min = 10;
