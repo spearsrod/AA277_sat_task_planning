@@ -6,8 +6,8 @@ opp_prev = s.opp_prev;
 slew_rate = params.slew_rate;
 t0_gmst = params.t0;
 for idx = 1:size(image_opps, 2)
-    opp_cur = image_opps(idx);
-    t_s = opp_cur.t_s;
+    opp_cur = image_opps{idx};
+    t_s = opp_cur.start.t;
     if(t_s <= t)
         continue
     end
@@ -17,8 +17,8 @@ for idx = 1:size(image_opps, 2)
     end
 end
 for idx = 1:size(gstation_opps, 2)
-    opp_cur = gstation_opps(idx);
-    t_s = opp_cur.t_s;
+    opp_cur = gstation_opps{idx};
+    t_s = opp_cur.start.t;
     if(t_s <= t)
         continue
     end
@@ -28,5 +28,7 @@ for idx = 1:size(gstation_opps, 2)
     end
 end
 A = sort_actions_by_time(A);
-A = A(1:N_max);
+if(size(A, 2) > N_max)
+    A = A(1:N_max);
+end
 end

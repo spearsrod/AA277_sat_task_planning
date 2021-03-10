@@ -34,7 +34,7 @@ end_idx = [];
 prev_idx = -1;
 for idx = 1:size(covered_idx, 2)
     cur_idx = covered_idx(idx);
-    if(cur_idx == size(elev, 3))
+    if(idx == size(covered_idx, 2))
         t_end = [t_end t(cur_idx)];
         end_idx = [end_idx cur_idx];
     end

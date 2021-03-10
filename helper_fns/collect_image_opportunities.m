@@ -10,11 +10,13 @@ for idx = 1:size(images_geod,2)
     n_opps = size(t_start, 2);
     for idx2 = 1:n_opps
         opp_start.t = t_start(idx2);
-        opp_start.sat_ecef = sat_ecef(:,start_idx);
+        opp_start.sat_ecef = sat_ecef(:,start_idx(idx2));
         opp_end.t = t_end(idx2);
-        opp_end.sat_ecef = sat_ecef(:, end_idx);
-        opp_general.type = 'image';
+        opp_end.sat_ecef = sat_ecef(:, end_idx(idx2));
+        opp_general.type = string('image');
         opp_general.l_geod = images_geod(:,idx);
+        opp_general.dpdt = 0;%-0.0001;
+        opp_general.dddt = 0.01/duration;
         
         cur_opp.start = opp_start;
         cur_opp.end = opp_end;

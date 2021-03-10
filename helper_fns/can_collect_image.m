@@ -1,7 +1,12 @@
-function can_collect = can_collect_image(l, I_c, Images, p, p_min, d, d_max)
-if(not(ismember(l, Images)))
+function can_collect = can_collect_image(opp_general, I_c, p, p_min, d, d_max)
+type = opp_general.type;
+opp_geod = opp_general.l_geod;
+
+% size(opp_geod)
+% im_taken_sz = size(I_c)
+if(type ~= string('image'))
     can_collect = false;
-elseif(ismember(l, I_c))
+elseif(size(I_c, 1) > 0 && ismember(opp_geod.', I_c.', 'rows'))
     can_collect = false;
 elseif(p <= p_min)
     can_collect = false;

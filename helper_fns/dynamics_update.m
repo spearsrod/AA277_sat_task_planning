@@ -1,6 +1,4 @@
 function s = dynamics_update(s_0, a, params)
-Images = params.Images;
-Gstations = params.Groundstations;
 p_min = params.p_min;
 d_max = params.d_max;
 
@@ -12,20 +10,27 @@ d = s_0.d;
 p = s_0.p;
 
 % Extract action variables
-t_s = a.t_s;
-t_e = a.t_e;
-l = a.l;
-
+t_s = a.start.t;
+t_e = a.end.t;
+action_type = a.general.type;
 s.t = t_s;
-if(ismember(l, Images) || ismember(l, Gstations))    
-    s.tp_s = s.t;
+
+if(action_type == string('image') || action_type == string('station'))    
+    s.tp_s = t;
+    if(can_collect_image(a.general, I_c, p, p_min, d, d_max))
+        action_geod = a.general.l_geod;
+        s.I_c = [I_c action_geod];
+    else
+        s.I_c = I_c;
+    end
 else
-    s.tp_s = s.tp_s;
-end
-if(can_collect_image(l, I_c, p, p_min, d, d_max))
-    s.I_c = [I_c l];
-else
+    s.tp_s = tp_s;
     s.I_c = I_c;
 end
 
+% TODO add dp to the opportunity structs
+s.p = s_0.p + (t_e - t_s) * a.general.dpdt + (t_s - tp_s) * 0;% * 0.000001;
+s.d = s_0.d + (t_e - t_s) * a.general.dddt + (t_s - tp_s) * 0.000001;
+
+s.opp_prev = a;
 end
