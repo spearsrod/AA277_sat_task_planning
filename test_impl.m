@@ -56,7 +56,7 @@ ground_stations = [78.2298391 -72.0167; 15.3924483 2.5333];
 
 % Plot ground track, image locations, and ground stations
 n = 100;
-image_goed = generate_image_locations(n);
+image_geod = generate_image_locations(n);
 image_lat = image_geod(1,:);
 image_lon = image_geod(2,:);
 figure
