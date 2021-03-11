@@ -36,9 +36,11 @@ s_0 = initialize_state(r0, t0);
 
 % Set problem parameters
 params.N_max = 3;
+params.N_max_sim = 500;
 params.gamma = 0.99;
 params.p_min = 0.3;
 params.d_max = 0.75;
+params.c = 1;
 d_solve = 6;
 
 % Get image opportunity locations
@@ -62,6 +64,6 @@ params.Station_Opps = collect_groundlink_opportunities(sat_ecef, t,...
 params.slew_rate = 1;
 params.t0 = 0;
 
-policy = smdp_rule_based(s_0, d_solve, params);
+policy = smdp_MCTS(s_0, d_solve, params);
 
 parse_policy(policy, params);
