@@ -8,7 +8,7 @@ r_dif = r_ecef - r_xyz_stat;
 R_xyz2enu = [-sin(stat_lon) -sin(stat_lat)*cos(stat_lon) cos(stat_lat)*cos(stat_lon); ...
     cos(stat_lon) -sin(stat_lat)*sin(stat_lon) cos(stat_lat)*sin(stat_lon); ...
     0 cos(stat_lat) sin(stat_lat)];
-r_enu = R_xyz2enu * r_dif;
+% r_enu = R_xyz2enu * r_dif;
 
 [elev, renu] = get_elevation(r_ecef, stat_lat, stat_lon);
 dist_renu = sqrt(renu(1,:).^2 + renu(2,:).^2 + renu(3,:).^2);

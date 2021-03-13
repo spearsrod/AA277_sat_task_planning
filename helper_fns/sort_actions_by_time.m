@@ -4,6 +4,6 @@ for idx = 1:size(A,2)
     t_s = A{idx}.start.t;
     ts = [ts t_s];
 end
-[t_sorted, IDX] = sort(ts);
+[~, IDX] = sort(ts);
 A_sorted = A(IDX);
 end

@@ -64,4 +64,7 @@ params.t0 = 0;
 
 policy = smdp_rule_based(s_0, d_solve, params);
 
-parse_policy(policy, params);
+[total_reward, I_c, n_ground_links, n_actions] = parse_policy(policy, params);
+total_reward
+n_ground_links
+n_actions

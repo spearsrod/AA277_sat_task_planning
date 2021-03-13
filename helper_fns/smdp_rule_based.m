@@ -11,7 +11,7 @@ function policy = smdp_rule_based(s_0, d_solve, params)
    
    counter = 2;
    while size(A, 2) ~= 0
-       a = select_action_naive(s, params)
+       a = select_action_naive(s, params);
        policy{counter} = {s, a};
        s = dynamics_update(s, a, params);
        counter = counter + 1;

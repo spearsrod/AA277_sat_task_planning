@@ -1,5 +1,5 @@
-clear all; close all;
-function_dir = '/home/s/Documents/School/Coterm/Winter/AA277/Project/mdp_impl/helper_fns';
+clear all; close all; clc;
+function_dir = 'helper_fns';
 % Add Director path for all commonly used functions and constatns
 addpath(function_dir);
 % Load file using the described orbital constants
@@ -62,4 +62,7 @@ params.t0 = 0;
 
 policy = smdp_forward_search(s_0, d_solve, params);
 
-parse_policy(policy, params);
+[total_reward, I_c, n_ground_links, n_actions] = parse_policy(policy, params);
+total_reward
+n_ground_links
+n_actions

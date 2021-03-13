@@ -15,7 +15,7 @@ t_e = a.end.t;
 action_type = a.general.type;
 s.t = t_s;
 
-if(action_type == string('image') || action_type == string('station'))    
+if(action_type == "image") || (action_type == "station")    
     s.tp_s = t;
     if(can_collect_image(a.general, I_c, p, p_min, d, d_max))
         action_geod = a.general.l_geod;
