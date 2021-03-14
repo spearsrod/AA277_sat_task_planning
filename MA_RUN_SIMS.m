@@ -69,7 +69,7 @@ d_solve_fs = 3;
 d_solve_mcts = 3;
 N_a_fs = 3;
 N_a_mcts = 3;
-comms_reward_vec = [-10, 0, 0.5, 10];
+comms_reward_vec = [-1, 0, 1];
 
 %flags to run specific methods
 run_FS = 1;
@@ -112,6 +112,9 @@ SWEEP_RESULTS.MCTS_results = zeros(length(n_image_vec), length(comms_reward_vec)
 SWEEP_RESULTS.FS_repeats = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec),  num_sims);
 SWEEP_RESULTS.RULE_repeats = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec), num_sims);
 SWEEP_RESULTS.MCTS_repeats = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec), num_sims);
+SWEEP_RESULTS.FS_time = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec),  num_sims);
+SWEEP_RESULTS.RULE_time = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec), num_sims);
+SWEEP_RESULTS.MCTS_time = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec), num_sims);
 
 %% Run & Solve
 total_time = 0;
@@ -143,7 +146,7 @@ for sweep_i = 1:N_SWEEPS_FS
         percent_done = ((sweep_i - 1) * num_sims + (simulation - 1)) / (N_SWEEPS_FS * num_sims) * 100
         if((sweep_i - 1) * num_sims + (simulation - 1) > 0)
             run_time = total_time
-            est_rem_time = run_time / percent_done * 100
+            est_rem_time = run_time / percent_done * 100 - run_time
         end
         % Get new image opportunity locations
         new_seed = randi(1000);
@@ -164,6 +167,7 @@ for sweep_i = 1:N_SWEEPS_FS
             reward_vec_fs(simulation, 1) = total_reward_FS;
             SWEEP_RESULTS.FS_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_FS;
             SWEEP_RESULTS.FS_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
+            SWEEP_RESULTS.FS_time(image_idx, comms_idx, sats_idx, simulation) = sim_time_fs(simulation, 1);
 %             total_reward_FS
 %             n_ground_links
 %             n_actions
@@ -184,6 +188,7 @@ for sweep_i = 1:N_SWEEPS_FS
             reward_vec_rule(simulation, 1) = total_reward_Rule;
             SWEEP_RESULTS.RULE_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_Rule;
             SWEEP_RESULTS.RULE_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
+            SWEEP_RESULTS.RULE_time(image_idx, comms_idx, sats_idx, simulation) = sim_time_rule(simulation, 1);
 %             total_reward_Rule
 %             n_ground_links
 %             n_actions
@@ -204,6 +209,7 @@ for sweep_i = 1:N_SWEEPS_FS
             reward_vec_MCTS(simulation, 1) = total_reward_MCTS;
             SWEEP_RESULTS.MCTS_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_MCTS;
             SWEEP_RESULTS.MCTS_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
+            SWEEP_RESULTS.MCTS_time(image_idx, comms_idx, sats_idx, simulation) = sim_time_MCTS(simulation, 1);
 %             total_reward_MCTS
 %             n_ground_links
 %             n_actions
