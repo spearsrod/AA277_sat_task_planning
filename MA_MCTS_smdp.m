@@ -33,12 +33,15 @@ general_params.p_min = 0.3;
 general_params.d_max = 0.75;
 Gstations = [78.2298391 -72.0167; 15.3924483 2.5333; 0 0];
 % Get image opportunity locations
-n_images = 50;
+n_images = 100;
 Images = generate_image_locations(n_images);
 rewards = ones(1, n_images);
 general_params.Images = Images;
 general_params.Gstations = [78.2298391 -72.0167; 15.3924483 2.5333; 0 0];
 general_params.rewards = ones(1, n_images);
+general_params.N_max_sim = 500;
+general_params.N_max = 3;
+general_params.gamma = 0.999;
 comms_reward = 0;
 params = get_mcts_params(orbits, t, general_params, comms_reward);
 

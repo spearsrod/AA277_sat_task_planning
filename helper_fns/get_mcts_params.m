@@ -2,10 +2,10 @@ function params = get_mcts_params(orbits, t, general_params, comms_reward)
 Images = general_params.Images;
 Gstations = general_params.Gstations;
 rewards = general_params.rewards;
-N_max = 3;
-N_max_sim = 500;
-c = 1;
-gamma = 0.99;
+N_max = general_params.N_max;
+N_max_sim = general_params.N_max_sim;
+c = 3;
+gamma = general_params.gamma;
 p_min = general_params.p_min;
 d_max = general_params.d_max;
 
