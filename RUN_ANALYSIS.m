@@ -69,58 +69,119 @@ params.Station_Opps = collect_groundlink_opportunities(sat_ecef, t,...
 params.slew_rate = 1;
 params.t0 = 0;
 
-%% Solve using specified policies
+%% Set Up Simulations & Parameter Sweeps
+
+% USER INPUTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%flag to run parameter sweeps
+run_param_sweep = 0;
+
+%vectors over which to sweep params
+gamma_vec = [0.99, 0.995, 0.999];
+d_solve_vec = [3, 5, 7];
+N_a_max_vec = [3, 4, 5];
 
 %flags to run specific methods
 run_FS = 1;
 run_Rule = 1;
 run_MCTS = 1;
 
-seed = 277;
-rng(seed);
-
-num_sims = 2; %number of simulations run for each method
+num_sims = 10; %number of simulations run for each method
 generate_plots = 1;
 
-for simulation = 1:num_sims
-    % Get new image opportunity locations
-    new_seed = randi(1000);
-    params.Images = generate_image_locations(n_images, new_seed);
-    params.Image_Opps = collect_image_opportunities(sat_ecef, sat_geod, t,...
-    params.Images, look_angle_min, look_angle_max, image_duration);
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%setup sweep variables
+if run_param_sweep    
+    kk = 1;
+    for iter1 = 1:length(gamma_vec)
+        for iter2 = 1:length(d_solve_vec)
+            for iter3 = 1:length(N_a_max_vec)
+                GAMMA_VEC(kk,1) = gamma_vec(iter1);
+                D_SOLVE_VEC(kk,1) = d_solve_vec(iter2);
+                N_A_MAX_VEC(kk,1) = N_a_max_vec(iter3);
+                kk = kk+1;
+            end
+        end
+    end
+    N_SWEEPS_FS = kk - 1;
+else
+    N_SWEEPS_FS = 1;
+    GAMMA_VEC = params.gamma;
+    D_SOLVE_VEC = d_solve;
+    N_A_MAX_VEC = params.N_max;
+end
+
+SWEEP_RESULTS = struct();
+SWEEP_RESULTS.best_FS_rewards = 0;
+SWEEP_RESULTS.best_MCTS_rewards = 0;
+
+%% Run & Solve
+
+for sweep_i = 1:N_SWEEPS_FS
+    d_solve = D_SOLVE_VEC(sweep_i);
+    params.N_max = N_A_MAX_VEC(sweep_i);
+    params.gamma = GAMMA_VEC(sweep_i);
     
-    if run_FS
-        tic
-        policy_FS = smdp_forward_search(s_0, d_solve, params);
-        sim_time_fs(simulation, 1) = toc;
-        [total_reward_FS, I_c, n_ground_links, n_actions] = parse_policy(policy_FS, params);
-        reward_vec_fs(simulation, 1) = total_reward_FS;
-        total_reward_FS
-        n_ground_links
-        n_actions
+    %reset seed to have consistency between parameter iterations
+    seed = 277;
+    rng(seed);
+
+    for simulation = 1:num_sims
+        % Get new image opportunity locations
+        new_seed = randi(1000);
+        params.Images = generate_image_locations(n_images, new_seed);
+        params.Image_Opps = collect_image_opportunities(sat_ecef, sat_geod, t,...
+        params.Images, look_angle_min, look_angle_max, image_duration);
+
+        if run_FS   
+            tic
+            policy_FS = smdp_forward_search(s_0, d_solve, params);
+            sim_time_fs(simulation, 1) = toc;
+            [total_reward_FS, I_c, n_ground_links, n_actions] = parse_policy(policy_FS, params);
+            reward_vec_fs(simulation, 1) = total_reward_FS;
+            total_reward_FS
+            n_ground_links
+            n_actions
+        end
+
+        if run_Rule
+            tic
+            policy_Rule = smdp_rule_based(s_0, d_solve, params);
+            sim_time_rule(simulation, 1) = toc;
+            [total_reward_Rule, I_c, n_ground_links, n_actions] = parse_policy(policy_Rule, params);
+            reward_vec_rule(simulation, 1) = total_reward_Rule;
+            total_reward_Rule
+            n_ground_links
+            n_actions
+        end
+
+        if run_MCTS
+            tic
+            policy_MCTS = smdp_MCTS(s_0, d_solve, params);
+            sim_time_MCTS(simulation, 1) = toc;
+            [total_reward_MCTS, I_c, n_ground_links, n_actions] = parse_policy(policy_MCTS, params);
+            reward_vec_MCTS(simulation, 1) = total_reward_MCTS;
+            total_reward_MCTS
+            n_ground_links
+            n_actions
+        end
     end
 
-    if run_Rule
-        tic
-        policy_Rule = smdp_rule_based(s_0, d_solve, params);
-        sim_time_rule(simulation, 1) = toc;
-        [total_reward_Rule, I_c, n_ground_links, n_actions] = parse_policy(policy_Rule, params);
-        reward_vec_rule(simulation, 1) = total_reward_Rule;
-        total_reward_Rule
-        n_ground_links
-        n_actions
+    if run_param_sweep && run_FS && (mean(reward_vec_fs) > mean(SWEEP_RESULTS.best_FS_rewards))
+        SWEEP_RESULTS.best_FS_gamma = params.gamma;
+        SWEEP_RESULTS.best_FS_d_solve = d_solve;
+        SWEEP_RESULTS.best_FS_NA = params.N_max;
+        SWEEP_RESULTS.best_FS_rewards = reward_vec_fs;
+    end
+    
+    if run_param_sweep && run_MCTS && (mean(reward_vec_MCTS) > mean(SWEEP_RESULTS.best_MCTS_rewards))
+        SWEEP_RESULTS.best_MCTS_gamma = params.gamma;
+        SWEEP_RESULTS.best_MCTS_d_solve = d_solve;
+        SWEEP_RESULTS.best_MCTS_NA = params.N_max;
+        SWEEP_RESULTS.best_MCTS_rewards = reward_vec_MCTS;
     end
 
-    if run_MCTS
-        tic
-        policy_MCTS = smdp_MCTS(s_0, d_solve, params);
-        sim_time_MCTS(simulation, 1) = toc;
-        [total_reward_MCTS, I_c, n_ground_links, n_actions] = parse_policy(policy_MCTS, params);
-        reward_vec_MCTS(simulation, 1) = total_reward_MCTS;
-        total_reward_MCTS
-        n_ground_links
-        n_actions
-    end
 end
 
 %% plot results
