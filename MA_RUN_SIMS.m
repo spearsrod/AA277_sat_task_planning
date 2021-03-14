@@ -31,11 +31,11 @@ n_days = 1;
 % Set date of epoch
 start_date = [3 5 2018];
 [orbits, t] = generate_n_orbits(n, n_days, OEs, start_date);
-n_sats_vec = [1, 3, 5, 15];
+n_sats_vec = [3, 5, 8];
 
 general_params.p_min = 0.3;
 general_params.d_max = 0.75;
-general_params.N_max_sim = 500;
+general_params.N_max_sim = 100;
 % general_params.N_max = 3;
 % general_params.gamma = 0.99;
 d_solve = 3;
@@ -44,7 +44,7 @@ Gstations = get_USGS_Landsat_Groundstations();
 
 % Get image opportunity locations
 n_images = 500;
-n_image_vec = [100, 200, 500, 1000];
+n_image_vec = [200];
 % Images = generate_image_locations(n_images);
 rewards = ones(1, n_images);
 
@@ -66,17 +66,17 @@ run_param_sweep = 1;
 gamma_fs = 0.995;
 gamma_mcts = 0.995;
 d_solve_fs = 3;
-d_solve_mcts = 10;
+d_solve_mcts = 3;
 N_a_fs = 3;
 N_a_mcts = 3;
-comms_reward_vec = [-5, -0.5, 0, 0.5, 1, 20];
+comms_reward_vec = [-10, 0, 0.5, 10];
 
 %flags to run specific methods
 run_FS = 1;
 run_Rule = 1;
 run_MCTS = 1;
 
-num_sims = 2;%10; %number of simulations run for each method
+num_sims = 10; %number of simulations run for each method
 generate_plots = 1;
 log_results = 1;
 
@@ -114,6 +114,7 @@ SWEEP_RESULTS.RULE_repeats = zeros(length(n_image_vec), length(comms_reward_vec)
 SWEEP_RESULTS.MCTS_repeats = zeros(length(n_image_vec), length(comms_reward_vec), length(n_sats_vec), num_sims);
 
 %% Run & Solve
+total_time = 0;
 
 for sweep_i = 1:N_SWEEPS_FS
     n_images = N_IMAGE_VEC(sweep_i);
@@ -130,15 +131,20 @@ for sweep_i = 1:N_SWEEPS_FS
     
     reward_vec_fs = zeros(num_sims, 1);
     reward_vec_rule = zeros(num_sims, 1);
-    reward_vec_mcts = zeros(num_sims, 1);
+    reward_vec_MCTS = zeros(num_sims, 1);
     sim_time_fs = zeros(num_sims, 1);
     sim_time_rule = zeros(num_sims, 1);
-    sim_time_mcts = zeros(num_sims, 1);
+    sim_time_MCTS = zeros(num_sims, 1);
     
     cur_orbits = orbits(1:n_sats);
     cur_s_0 = s_0(1:n_sats);
 
     for simulation = 1:num_sims
+        percent_done = ((sweep_i - 1) * num_sims + (simulation - 1)) / (N_SWEEPS_FS * num_sims) * 100
+        if((sweep_i - 1) * num_sims + (simulation - 1) > 0)
+            run_time = total_time
+            est_rem_time = run_time / percent_done * 100
+        end
         % Get new image opportunity locations
         new_seed = randi(1000);
         Images = generate_image_locations(n_images, new_seed);
@@ -153,15 +159,17 @@ for sweep_i = 1:N_SWEEPS_FS
             tic
             policies_FS = MA_smdp_forward_search(cur_s_0, d_solve, params);
             sim_time_fs(simulation, 1) = toc;
+            total_time = total_time + sim_time_fs(simulation, 1);
             [total_reward_FS, I_c, n_ground_links, n_actions, n_comms, n_repeats] = MA_parse_policy(policies_FS, params);
             reward_vec_fs(simulation, 1) = total_reward_FS;
             SWEEP_RESULTS.FS_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_FS;
             SWEEP_RESULTS.FS_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
-            total_reward_FS
-            n_ground_links
-            n_actions
+%             total_reward_FS
+%             n_ground_links
+%             n_actions
         end
-
+        status = "FS Done"
+        
         if run_Rule
             general_params.gamma = gamma_fs;
             general_params.N_max = N_a_fs;
@@ -170,15 +178,17 @@ for sweep_i = 1:N_SWEEPS_FS
             tic
             policies_Rule = MA_smdp_rule_based(cur_s_0, d_solve, params);
             sim_time_rule(simulation, 1) = toc;
+            total_time = total_time + sim_time_rule(simulation, 1);
 %             [total_reward_Rule, I_c, n_ground_links, n_actions] = parse_policy(policy_Rule, params);
             [total_reward_Rule, I_c, n_ground_links, n_actions, n_comms, n_repeats] = MA_parse_policy(policies_Rule, params);
             reward_vec_rule(simulation, 1) = total_reward_Rule;
             SWEEP_RESULTS.RULE_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_Rule;
             SWEEP_RESULTS.RULE_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
-            total_reward_Rule
-            n_ground_links
-            n_actions
+%             total_reward_Rule
+%             n_ground_links
+%             n_actions
         end
+        status = "RULE Done"
 
         if run_MCTS
             general_params.gamma = gamma_mcts;
@@ -188,15 +198,18 @@ for sweep_i = 1:N_SWEEPS_FS
             tic
             policies_MCTS = MA_smdp_MCTS(cur_s_0, d_solve, params);
             sim_time_MCTS(simulation, 1) = toc;
+            total_time = total_time + sim_time_MCTS(simulation, 1);
 %             [total_reward_MCTS, I_c, n_ground_links, n_actions] = parse_policy(policy_MCTS, params);
             [total_reward_MCTS, I_c, n_ground_links, n_actions, n_comms, n_repeats] = MA_parse_policy(policies_MCTS, params);
             reward_vec_MCTS(simulation, 1) = total_reward_MCTS;
             SWEEP_RESULTS.MCTS_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_MCTS;
             SWEEP_RESULTS.MCTS_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
-            total_reward_MCTS
-            n_ground_links
-            n_actions
+%             total_reward_MCTS
+%             n_ground_links
+%             n_actions
         end
+        status = "MCTS Done"
+        
         if(log_results)
             save('running_sims.mat')
         end
