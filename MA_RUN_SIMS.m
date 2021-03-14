@@ -44,7 +44,7 @@ Gstations = get_USGS_Landsat_Groundstations();
 
 % Get image opportunity locations
 n_images = 500;
-n_image_vec = [200];
+n_image_vec = [500];
 % Images = generate_image_locations(n_images);
 rewards = ones(1, n_images);
 
@@ -217,7 +217,7 @@ for sweep_i = 1:N_SWEEPS_FS
         status = "MCTS Done"
         
         if(log_results)
-            save('running_sims.mat')
+            save('running_sims2.mat')
         end
     end
 
