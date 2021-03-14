@@ -1,6 +1,5 @@
 function plot_ground_track(lat_geod, long_geod)
 % Plot the orbit in geodetic coordinates
-figure
 plot(long_geod, lat_geod);
 hold on;
 % Load and plot MATLAB built-in Earth topography data

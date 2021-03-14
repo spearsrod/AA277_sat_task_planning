@@ -1,6 +1,17 @@
-function s = dynamics_update(s_0, a, params)
+function s = MA_dynamics_update(s_0, a, params)
 p_min = params.p_min;
 d_max = params.d_max;
+
+n_sats = size(s_0, 2);
+for idx = 1:n_sats
+    cur_a = a{idx};
+    cur_s0 = s{idx};
+    a_type = cur_a.general.type;
+    if(cur_a == "comms")
+    else
+        cur_s = dynamics_update(s_0, cur_a, params);
+    end
+end
 
 % Extract state variables
 t = s_0.t;
@@ -14,8 +25,6 @@ t_s = a.start.t;
 t_e = a.end.t;
 action_type = a.general.type;
 s.t = t_s;
-s.rewards = s_0.rewards;
-s.sat_idx = s_0.sat_idx;
 
 if(action_type == "image") || (action_type == "station")    
     s.tp_s = t;

@@ -48,6 +48,7 @@ params.Gstations = [78.2298391 -72.0167; 15.3924483 2.5333; 0 0];
 %params.Gstations = get_USGS_Landsat_Groundstations();
 
 params.rewards = ones(1, n_images);
+s_0.rewards = params.rewards;
 % Image capture requires 30 seconds
 image_duration = 30;
 % Minimum elevation for ground station contact

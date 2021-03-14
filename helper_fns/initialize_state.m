@@ -20,7 +20,7 @@ init_start.t = 0;
 init_start.sat_ecef = r0;
 init_end.t = 0;
 init_end.sat_ecef = r0;
-init_general.type = string('init');
+init_general.type = "init";
 
 %Assume initial pointing at nadir
 epsilon = 10^(-10);
