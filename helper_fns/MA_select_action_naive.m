@@ -8,7 +8,7 @@ function a = MA_select_action_naive(s, params)
     cur_t = a.start.t;
     if a.general.type == 'image' || a.general.type == 'station' || a.general.type == 'comms'
         s_prime = dynamics_update(s, a, params);
-        if (s_prime.p <= params.p_min) || (s_prime.d > params.d_max)
+        if (s_prime.p <= params.p_min) || (s_prime.d > params.d_max) || (params.comms_reward < -1e5)
             a = get_nil_action(cur_t, s);
         end
     else

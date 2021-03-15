@@ -44,7 +44,7 @@ Gstations = get_USGS_Landsat_Groundstations();
 
 % Get image opportunity locations
 n_images = 500;
-n_image_vec = [500];
+n_image_vec = [200, 500];
 % Images = generate_image_locations(n_images);
 rewards = ones(1, n_images);
 
@@ -69,7 +69,7 @@ d_solve_fs = 3;
 d_solve_mcts = 3;
 N_a_fs = 3;
 N_a_mcts = 3;
-comms_reward_vec = [-1, 0, 1];
+comms_reward_vec = [-1e8, -1, 0, 1];
 
 %flags to run specific methods
 run_FS = 1;
