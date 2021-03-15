@@ -219,7 +219,7 @@ for sweep_i = 1:N_SWEEPS_FS
         status = "MCTS Done"
         
         if(log_results)
-            save('running_sims2.mat')
+            save('running_sims4.mat')
         end
     end
 
