@@ -31,7 +31,7 @@ n_days = 1;
 % Set date of epoch
 start_date = [3 5 2018];
 [orbits, t] = generate_n_orbits(n, n_days, OEs, start_date);
-n_sats_vec = [3, 5, 8];
+n_sats_vec = [3, 5];
 
 general_params.p_min = 0.3;
 general_params.d_max = 0.75;
@@ -44,7 +44,7 @@ Gstations = get_USGS_Landsat_Groundstations();
 
 % Get image opportunity locations
 n_images = 500;
-n_image_vec = [200, 500];
+n_image_vec = [200];
 % Images = generate_image_locations(n_images);
 rewards = ones(1, n_images);
 
@@ -69,12 +69,12 @@ d_solve_fs = 3;
 d_solve_mcts = 3;
 N_a_fs = 3;
 N_a_mcts = 3;
-comms_reward_vec = [-1e8, -1, 0, 1];
+comms_reward_vec = [-1e8, -1, -0.5 0, 0.5, 1];
 
 %flags to run specific methods
 run_FS = 1;
 run_Rule = 1;
-run_MCTS = 1;
+run_MCTS = 0;
 
 num_sims = 10; %number of simulations run for each method
 generate_plots = 1;
@@ -165,6 +165,7 @@ for sweep_i = 1:N_SWEEPS_FS
             total_time = total_time + sim_time_fs(simulation, 1);
             [total_reward_FS, I_c, n_ground_links, n_actions, n_comms, n_repeats] = MA_parse_policy(policies_FS, params);
             reward_vec_fs(simulation, 1) = total_reward_FS;
+            SWEEP_RESULTS.FS_num_images(image_idx, comms_idx, sats_idx, simulation) = size(I_c, 2);
             SWEEP_RESULTS.FS_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_FS;
             SWEEP_RESULTS.FS_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
             SWEEP_RESULTS.FS_time(image_idx, comms_idx, sats_idx, simulation) = sim_time_fs(simulation, 1);
@@ -186,6 +187,7 @@ for sweep_i = 1:N_SWEEPS_FS
 %             [total_reward_Rule, I_c, n_ground_links, n_actions] = parse_policy(policy_Rule, params);
             [total_reward_Rule, I_c, n_ground_links, n_actions, n_comms, n_repeats] = MA_parse_policy(policies_Rule, params);
             reward_vec_rule(simulation, 1) = total_reward_Rule;
+            SWEEP_RESULTS.RULE_num_images(image_idx, comms_idx, sats_idx, simulation) = size(I_c, 2);
             SWEEP_RESULTS.RULE_results(image_idx, comms_idx, sats_idx, simulation) = total_reward_Rule;
             SWEEP_RESULTS.RULE_repeats(image_idx, comms_idx, sats_idx, simulation) = n_repeats;
             SWEEP_RESULTS.RULE_time(image_idx, comms_idx, sats_idx, simulation) = sim_time_rule(simulation, 1);
