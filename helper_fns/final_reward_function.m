@@ -27,7 +27,6 @@ elseif(action_type == "image")
 elseif(action_type == "station")
     r = 0.1 * (t_s - t);
 elseif(action_type == "comms")
-    %TODO set this to something more reasonable
     r = 0;
 else
     r = 0;

@@ -23,7 +23,7 @@ elseif(action_type == "station")
     r = 0.1 * (t_s - t);
 elseif(action_type == "comms")
     %TODO set this to something more reasonable
-    r = comms_reward * (1 - t_s/t_final);
+    r = comms_reward;
 else
     r = 0;
 end
