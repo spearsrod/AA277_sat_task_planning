@@ -26,4 +26,17 @@ function [a_star, v_star] = MA_select_action_fs_smdp(s, d_solve, params)
             v_star = cur_v;
         end
     end
+%     if(v_star < 0 && v_star ~= -inf)
+%         v_prime_alt = v_star
+%         alt_state = s
+%         action_type_alt = a_star.general.type
+%         n_actions_alt = size(A,2)
+%         cur_a_alt = A{end};
+%         atl_cur_v = reward_function(alt_state, cur_a_alt, params);
+%         s_prime_alt = dynamics_update(alt_state, cur_a_alt, params);
+%         [alt_a, alt_v] = MA_select_action_fs_smdp(s_prime_alt, d_solve - 1, params);
+%         atl_cur_v = atl_cur_v + gamma^(cur_a_alt.start.t - alt_state.t)*alt_v;
+%         alt_type = alt_a.general.type
+%         atl_cur_v = atl_cur_v
+%     end
 end

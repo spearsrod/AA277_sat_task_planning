@@ -14,6 +14,10 @@ for idx = 1:n_sats
         p_t(idx, t_idx) = ones(size(t_idx)) * cur_p;
         d_t(idx, t_idx) = ones(size(t_idx)) * cur_d;
         t_prev = cur_t;
+        if(idx2 == n_actions)
+            p_t(idx, t_idx(end) + 1:end) = ones(size(p_t(idx, t_idx(end) + 1, end))) * cur_p;
+            d_t(idx, t_idx(end) + 1:end) = ones(size(d_t(idx, t_idx(end) + 1, end))) * cur_d;
+        end
     end
 end
 end

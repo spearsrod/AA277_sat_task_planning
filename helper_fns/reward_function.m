@@ -27,7 +27,7 @@ elseif(action_type == "image" && (ismember(a.general.l_geod.', I_c.', 'rows')))
     [~, index] = ismember(a.general.l_geod.', Images.', 'rows');
     r = 0;%-1e3;%gamma^(t_s - t) * R_s(index);
 elseif(action_type == "station")
-    r = 0.001 * (t_e - t_s);
+    r = 0.0001 * (t_e - t_s);
     %r = 0;
 elseif(action_type == "comms")
     %TODO set this to something more reasonable

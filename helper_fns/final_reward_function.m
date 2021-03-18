@@ -13,10 +13,6 @@ p = s.p;
 d = s.d;
 cur_I_c = -1;
 repeat_image = 0;
-
-t_s = a.start.t;
-action_type = a.general.type;
-
 t_s = a.start.t;
 t_e = a.end.t;
 action_type = a.general.type;
@@ -31,7 +27,7 @@ elseif(action_type == "image")
     repeat_image = 1;
     r = 0;
 elseif(action_type == "station")
-    r = 0.001 * (t_e - t_s);
+    r = 0.0001 * (t_e - t_s);
     %r = 0;
 elseif(action_type == "comms")
     r = 0;
@@ -40,6 +36,8 @@ else
 end
 if(p <= p_min)
     r = r - 10^4;
+    hmmmm = 0
 elseif(d >= d_max)
     r = r - 10^4;
+    hiii = 0
 end
