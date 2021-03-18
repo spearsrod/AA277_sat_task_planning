@@ -15,6 +15,7 @@ s_0.tp_s = 0;
 s_0.I_c = [];
 s_0.d = 0; %TODO: Make sure this is correct
 s_0.p = 1; %TODO: Make sure this is correct
+s_0.n_prev_comms = 0;
 
 init_start.t = 0;
 init_start.sat_ecef = r0;

@@ -13,8 +13,8 @@ for idx = 1:size(gstation_geod,2)
         opp_end.sat_ecef = sat_ecef(:,end_idx(idx2));
         opp_general.type = "station";
         opp_general.l_geod = gstation_geod(:,idx);
-        opp_general.dpdt = 0;%-0.0001;
-        opp_general.dddt = -0.01/image_duration*4;
+        opp_general.dpdt = -0.0001;
+        opp_general.dddt = -0.001;
         
         cur_opp.start = opp_start;
         cur_opp.end = opp_end;

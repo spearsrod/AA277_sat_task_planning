@@ -30,12 +30,13 @@ for idx = 1:size(I_fut, 2)
     I_fut_cur = I_fut(:,idx);
     t_I_fut_cur = t_I_fut(idx);
     [~, index] = ismember(I_fut_cur.', Images.', 'rows');
-    R_s_new(index) = min([(1 - gamma^(t_I_fut_cur - t_end))*R(index) R_s(index)];
+    fut_gamma = 0.99999;
+    R_s_new(index) = min([(1 - fut_gamma^(t_I_fut_cur - t_end))*R(index), R_s(index)];
 end
 new_s.rewards = R_s_new;
 
 % Arbitrary constant for now
-comms_data = 0.001;
+comms_data = 0.0001;
 new_s.d = d + comms_data;
 comms_power = 0;
 new_s.p = p - comms_power;

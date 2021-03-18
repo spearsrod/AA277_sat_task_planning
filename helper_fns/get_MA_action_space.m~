@@ -51,11 +51,6 @@ end
 
 A = sort_actions_by_time(A);
 if(size(A, 2) > N_max)
-    A = A(1:N_max);
+    tmp_A = tmp_A(1:N_max);
 end
-n_actions = size(A,2);
-if(n_actions == 0)
-    return;
-end
-A{n_actions + 1} = get_nil_action(A{1}.start.t, A{1}.start.t, s);
 end

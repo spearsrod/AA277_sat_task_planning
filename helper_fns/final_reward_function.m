@@ -16,8 +16,13 @@ repeat_image = 0;
 
 t_s = a.start.t;
 action_type = a.general.type;
+
+t_s = a.start.t;
+t_e = a.end.t;
+action_type = a.general.type;
 if(action_type == "NIL")
-    r = 1/(10^4) * (t_s - t);
+    r = 1/(10^3) * (t_s - t);
+    %r = 0;
 elseif(action_type == "image" && (size(combined_I_c, 1) == 0 || not(ismember(a.general.l_geod.', combined_I_c.', 'rows'))))
     [~, index] = ismember(a.general.l_geod.', Images.', 'rows');
     r = R_s(index);%gamma^(t_s - t) * R_s(index);
@@ -26,7 +31,8 @@ elseif(action_type == "image")
     repeat_image = 1;
     r = 0;
 elseif(action_type == "station")
-    r = 0.1 * (t_s - t);
+    r = 0.001 * (t_e - t_s);
+    %r = 0;
 elseif(action_type == "comms")
     r = 0;
 else

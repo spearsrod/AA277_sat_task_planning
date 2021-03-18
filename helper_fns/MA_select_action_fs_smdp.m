@@ -7,11 +7,11 @@ function [a_star, v_star] = MA_select_action_fs_smdp(s, d_solve, params)
     gamma = params.gamma;
     cur_t = s.t;
     if(d_solve == 0)
-        a_star = get_nil_action(cur_t, s);
+        a_star = get_nil_action(cur_t, cur_t, s);
         v_star = 0;
         return
     end
-    a_star = get_nil_action(cur_t, s);
+    a_star = get_nil_action(cur_t, cur_t, s);
     v_star = -inf;
     %TODO add sun-pointing to action space
     A = get_MA_action_space(s, image_opps, gstation_opps, comms_opps, N_max, params);

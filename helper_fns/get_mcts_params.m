@@ -19,6 +19,7 @@ look_angle_max = 50;
 n_sats = size(orbits, 2);
 min_dist = 5000;
 params = cell(1,n_sats);
+duration = 60;
 for idx = 1:n_sats
     sat_ecef = orbits{idx}.sat_ecef;
     sat_geod = orbits{idx}.sat_geod;
@@ -36,8 +37,11 @@ for idx = 1:n_sats
         end
         orbit1 = orbits{idx};
         orbit2 = orbits{idx2};
-        cur_comms_opps = collect_comms_opportunities(orbit1, orbit2, t, min_dist);
+        cur_comms_opps = collect_comms_opportunities(orbit1, orbit2, t, min_dist, duration);
         comms_opps = [comms_opps cur_comms_opps];
+    end
+    if(comms_reward < -1e5)
+        comms_opps = {};
     end
     cur_params.Comms_Opps = comms_opps;
     cur_params.slew_rate = 1;

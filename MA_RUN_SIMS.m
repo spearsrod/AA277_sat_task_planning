@@ -43,17 +43,15 @@ d_solve = 3;
 Gstations = get_USGS_Landsat_Groundstations();
 
 % Get image opportunity locations
-n_images = 500;
-n_image_vec = [200, 500];
+%n_images = 200;
+n_image_vec = [1000];%[1000, 500, 200];
 % Images = generate_image_locations(n_images);
-rewards = ones(1, n_images);
+%rewards = ones(1, n_images);
 
 general_params.Gstations = Gstations;
-general_params.rewards = rewards;
+%general_params.rewards = rewards;
 % Initialize the state
-t0 = 0;
-s_0 = MA_initialize_state(orbits, t0, rewards);
-comms_reward = 1;
+%comms_reward = 1;
 
 %% Set Up Simulations & Parameter Sweeps
 
@@ -74,9 +72,9 @@ comms_reward_vec = [-1e8, -1, 0, 1];
 %flags to run specific methods
 run_FS = 1;
 run_Rule = 1;
-run_MCTS = 1;
+run_MCTS = 0;
 
-num_sims = 10; %number of simulations run for each method
+num_sims = 4; %number of simulations run for each method
 generate_plots = 1;
 log_results = 1;
 
@@ -129,7 +127,7 @@ for sweep_i = 1:N_SWEEPS_FS
     sats_idx = find(n_sats_vec == n_sats);
     
     %reset seed to have consistency between parameter iterations
-    seed = 277;
+    seed = 300;
     rng(seed);
     
     reward_vec_fs = zeros(num_sims, 1);
@@ -138,6 +136,11 @@ for sweep_i = 1:N_SWEEPS_FS
     sim_time_fs = zeros(num_sims, 1);
     sim_time_rule = zeros(num_sims, 1);
     sim_time_MCTS = zeros(num_sims, 1);
+    
+    t0 = 0;
+    rewards = ones(1, n_images);
+    general_params.rewards = rewards;
+    s_0 = MA_initialize_state(orbits, t0, rewards);
     
     cur_orbits = orbits(1:n_sats);
     cur_s_0 = s_0(1:n_sats);
@@ -217,7 +220,7 @@ for sweep_i = 1:N_SWEEPS_FS
         status = "MCTS Done"
         
         if(log_results)
-            save('running_sims4.mat')
+            save('running_sims6.mat')
         end
     end
 

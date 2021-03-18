@@ -15,7 +15,7 @@ for idx = 1:size(images_geod,2)
         opp_end.sat_ecef = sat_ecef(:, end_idx(idx2));
         opp_general.type = "image";
         opp_general.l_geod = images_geod(:,idx);
-        opp_general.dpdt = 0;%-0.0001;
+        opp_general.dpdt = -0.0001;
         opp_general.dddt = 0.01/duration;
         
         cur_opp.start = opp_start;

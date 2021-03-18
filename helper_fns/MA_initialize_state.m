@@ -9,6 +9,7 @@ for idx = 1:n_sats
     s_cur.p = 1; %TODO: Make sure this is correct
     s_cur.sat_idx = idx;
     s_cur.rewards = rewards;
+    s_cur.n_prev_comms = 0;
     
     r0 = orbits{idx}.sat_ecef(:,1);
     init_start.t = 0;

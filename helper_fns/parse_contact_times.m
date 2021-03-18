@@ -1,4 +1,4 @@
-function [t_start, t_end, start_idx, end_idx] = parse_contact_times(contact_idx, t)
+function [t_start, t_end, start_idx, end_idx] = parse_contact_times(contact_idx, t, comms_time)
 t_start = [];
 t_end = [];
 start_idx = [];
